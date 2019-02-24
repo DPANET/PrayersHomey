@@ -16,7 +16,7 @@
           },
           {
             "prayerName": "Fajr",
-            "adjustments": 2
+            "adjustments": 3
           },
           {
             "prayerName": "Sunrise",
@@ -32,7 +32,7 @@
           },
           {
             "prayerName": "Maghrib",
-            "adjustments": 4
+            "adjustments": 5
           },
           {
             "prayerName": "Sunset",
@@ -41,7 +41,7 @@
 
           {
             "prayerName": "Isha",
-            "adjustments": -15
+            "adjustments": -13
           },
 
           {
