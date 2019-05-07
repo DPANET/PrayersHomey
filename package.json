@@ -8,17 +8,17 @@
     "name": "Omar B."
   },
   "dependencies": {
-    "@dpanet/prayers-lib": "^1.0.36",
-    "cron": "^1.6.0",
+    "@dpanet/prayers-lib": "^1.0.52",
+    "cron": "^1.7.1",
     "debug": "^4.1.1",
     "dotenv": "^6.2.0",
-    "formBuilder": "^3.1.3",
+    "formBuilder": "^3.2.3",
     "lowdb": "^1.0.0"
   },
   "devDependencies": {
-    "@types/cron": "^1.6.0",
-    "@types/debug": "^4.1.1",
-    "@types/dotenv": "^6.1.0",
-    "@types/lowdb": "^1.0.6"
+    "@types/cron": "^1.7.0",
+    "@types/debug": "^4.1.4",
+    "@types/dotenv": "^6.1.1",
+    "@types/lowdb": "^1.0.7"
   }
 }
