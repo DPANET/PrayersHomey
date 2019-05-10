@@ -16,7 +16,7 @@
           },
           {
             "prayerName": "Fajr",
-            "adjustments": 4
+            "adjustments": 2
           },
           {
             "prayerName": "Sunrise",
@@ -53,8 +53,8 @@
     },
     "locationConfig": {
       "location": {
-        "latitude": 25.2048493,
-        "longtitude": 55.2707828,
+        "latitude": 24.444103,
+        "longtitude": 54.370867,
         "city": "Dubai",
         "countryCode": "AE",
         "countryName": "United Arab Emirates",
