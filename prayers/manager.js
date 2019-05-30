@@ -44,7 +44,7 @@ class PrayersAppManager {
     // private  _prayerEvents:prayerlib.
     static async initApp() {
         try {
-            exports.appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
+            exports.appmanager._prayerConfig = await new Configurator().getPrayerConfig();
             exports.appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
                 .createPrayerTimeBuilder(null, exports.appmanager._prayerConfig)
                 .setPrayerMethod(prayerlib.Methods.Mecca)
