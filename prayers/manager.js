@@ -44,10 +44,10 @@ class PrayersAppManager {
     // private  _prayerEvents:prayerlib.
     static async initApp() {
         try {
-            exports.appmanager._prayerConfig = await new Configurator().getPrayerConfig();
+            exports.appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
             exports.appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
                 .createPrayerTimeBuilder(null, exports.appmanager._prayerConfig)
-                .setPrayerMethod(prayerlib.Methods.Mecca)
+                //.setPrayerMethod(prayerlib.Methods.Mecca)
                 //  .setPrayerPeriod(prayerlib.DateUtil.getNowDate(), prayerlib.DateUtil.addDay(1, prayerlib.DateUtil.getNowDate()))
                 .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
                 .createPrayerTimeManager();
@@ -68,6 +68,9 @@ class PrayersAppManager {
         this._prayersRefreshEventProvider = new events.PrayersRefreshEventProvider(this._prayerManager);
         this._prayersRefreshEventListener = new events.PrayerRefreshEventListener(this);
         this._prayersRefreshEventProvider.registerListener(this._prayersRefreshEventListener);
+        this._configEventProvider = new events.ConfigEventProvider('config/config.json');
+        this._configEventListener = new events.ConfigEventListener(this);
+        this._configEventProvider.registerListener(this._configEventListener);
     }
     //schedule refresh of prayers schedule based on date 
     scheduleRefresh(date) {
@@ -132,7 +135,7 @@ class PrayersAppManager {
         });
     }
     //refresh prayer manager in case we reach the end of the array.
-    refreshPrayerManager() {
+    refreshPrayerManagerByDate() {
         let startDate = prayerlib.DateUtil.getNowDate();
         let endDate = prayerlib.DateUtil.addMonth(1, startDate);
         this.prayerManager.updatePrayersDate(startDate, endDate)
@@ -146,6 +149,22 @@ class PrayersAppManager {
             let date = prayerlib.DateUtil.addDay(1, startDate);
             this.scheduleRefresh(date);
         });
+    }
+    async refreshPrayerManagerByConfig() {
+        let startDate = prayerlib.DateUtil.getNowDate();
+        let endDate = prayerlib.DateUtil.addMonth(1, startDate);
+        try {
+            exports.appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
+            exports.appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
+                .createPrayerTimeBuilder(null, exports.appmanager._prayerConfig)
+                .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
+                .createPrayerTimeManager();
+        }
+        catch (err) {
+            console.log(err);
+            let date = prayerlib.DateUtil.addDay(1, startDate);
+            this.scheduleRefresh(date);
+        }
     }
 }
 exports.PrayersAppManager = PrayersAppManager;

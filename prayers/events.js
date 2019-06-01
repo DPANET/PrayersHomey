@@ -7,12 +7,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv = require("dotenv");
-dotenv.config();
+const dotenv = require('dotenv').config();
+const debug = require('debug')('app:router');
 const prayerlib = __importStar(require("@dpanet/prayers-lib"));
 const to = require('await-to-js').default;
 const util_1 = require("util");
 const cron = __importStar(require("cron"));
+const chokidar = require("chokidar");
 class PrayersEventProvider extends prayerlib.EventProvider {
     constructor(prayerManager) {
         super();
@@ -28,11 +29,11 @@ class PrayersEventProvider extends prayerlib.EventProvider {
         super.notifyObservers(eventType, prayersTime, error);
     }
     startPrayerSchedule(prayerManager) {
+        this.stopPrayerSchedule();
         if (!util_1.isNullOrUndefined(prayerManager))
             this._prayerManager = prayerManager;
-        if (util_1.isNullOrUndefined(this._upcomingPrayerEvent) || !this._upcomingPrayerEvent.running) {
-            this.runNextPrayerSchedule();
-        }
+        // if (isNullOrUndefined(this._upcomingPrayerEvent) || !this._upcomingPrayerEvent.running) {
+        this.runNextPrayerSchedule();
     }
     stopPrayerSchedule() {
         if (this._upcomingPrayerEvent.running)
@@ -62,7 +63,7 @@ class PrayersEventListener {
     }
     onCompleted() {
         this._prayerAppManager.prayerEventProvider.stopPrayerSchedule();
-        this._prayerAppManager.refreshPrayerManager();
+        this._prayerAppManager.refreshPrayerManagerByDate();
     }
     onError(error) {
         console.log(error);
@@ -107,7 +108,7 @@ class PrayerRefreshEventListener {
         this._prayerAppManager = prayerAppManager;
     }
     onCompleted() {
-        this._prayerAppManager.refreshPrayerManager();
+        this._prayerAppManager.refreshPrayerManagerByConfig();
     }
     onError(error) {
         console.log(error);
@@ -116,3 +117,49 @@ class PrayerRefreshEventListener {
     }
 }
 exports.PrayerRefreshEventListener = PrayerRefreshEventListener;
+class ConfigEventProvider extends prayerlib.EventProvider {
+    constructor(pathName) {
+        super();
+        this._pathName = pathName;
+        this._chokidar = chokidar.watch(this._pathName);
+        this._chokidar.options = {};
+        this._chokidar.on("change", this.fileChangedEvent.bind(this));
+        this._chokidar.on("error", this.fileChangeError.bind(this));
+    }
+    registerListener(observer) {
+        super.registerListener(observer);
+    }
+    removeListener(observer) {
+        super.removeListener(observer);
+    }
+    notifyObservers(eventType, fileName, error) {
+        super.notifyObservers(eventType, fileName, error);
+    }
+    fileChangedEvent(pathName) {
+        try {
+            this.notifyObservers(prayerlib.EventsType.OnNext, pathName);
+        }
+        catch (err) {
+            this.notifyObservers(prayerlib.EventsType.OnError, pathName, err);
+        }
+    }
+    fileChangeError(error) {
+        this.notifyObservers(prayerlib.EventsType.OnError, this._pathName, error);
+    }
+}
+exports.ConfigEventProvider = ConfigEventProvider;
+class ConfigEventListener {
+    constructor(prayerAppManager) {
+        this._prayerAppManager = prayerAppManager;
+    }
+    onCompleted() {
+    }
+    onError(error) {
+        debug(error);
+    }
+    onNext(value) {
+        debug(`${value} config file has been saved`);
+        this._prayerAppManager.refreshPrayerManagerByConfig();
+    }
+}
+exports.ConfigEventListener = ConfigEventListener;

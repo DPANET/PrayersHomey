@@ -1,11 +1,13 @@
-import dotenv = require('dotenv');
-dotenv.config();
+const dotenv = require('dotenv').config();
+const debug = require('debug')('app:router');
 import * as prayerlib from '@dpanet/prayers-lib';
 import * as manager from './manager';
 const to = require('await-to-js').default;
 import { isNullOrUndefined } from 'util';
 import * as cron from 'cron';
 import { DateUtil } from '@dpanet/prayers-lib';
+import chokidar = require('chokidar');
+
 
 export class PrayersEventProvider extends prayerlib.EventProvider<prayerlib.IPrayersTiming>
 {
@@ -25,11 +27,12 @@ export class PrayersEventProvider extends prayerlib.EventProvider<prayerlib.IPra
         super.notifyObservers(eventType, prayersTime, error);
     }
     public startPrayerSchedule(prayerManager?: prayerlib.IPrayerManager): void {
+        this.stopPrayerSchedule();
         if (!isNullOrUndefined(prayerManager))
             this._prayerManager = prayerManager;
-        if (isNullOrUndefined(this._upcomingPrayerEvent) || !this._upcomingPrayerEvent.running) {
+       // if (isNullOrUndefined(this._upcomingPrayerEvent) || !this._upcomingPrayerEvent.running) {
             this.runNextPrayerSchedule();
-        }
+        
     }
     public stopPrayerSchedule(): void {
         if (this._upcomingPrayerEvent.running)
@@ -62,7 +65,7 @@ export class PrayersEventListener implements prayerlib.IObserver<prayerlib.IPray
     }
     onCompleted(): void {
         this._prayerAppManager.prayerEventProvider.stopPrayerSchedule();
-        this._prayerAppManager.refreshPrayerManager();
+        this._prayerAppManager.refreshPrayerManagerByDate();
     }
     onError(error: Error): void {
         console.log(error);
@@ -113,11 +116,68 @@ export class PrayerRefreshEventListener implements prayerlib.IObserver<prayerlib
         this._prayerAppManager = prayerAppManager;
     }
     onCompleted(): void {
-        this._prayerAppManager.refreshPrayerManager();
+        this._prayerAppManager.refreshPrayerManagerByConfig();
     }
     onError(error: Error): void {
         console.log(error);
     }
     onNext(value: prayerlib.IPrayerManager): void {
+    }
+}
+export class ConfigEventProvider extends prayerlib.EventProvider<string>
+{
+    private _pathName: string;
+    private _chokidar: chokidar.FSWatcher;
+    constructor(pathName: string) {
+        super();
+        this._pathName= pathName;
+        this._chokidar = chokidar.watch(this._pathName);
+        this._chokidar.options={
+            
+
+        }
+        this._chokidar.on("change",this.fileChangedEvent.bind(this))
+        this._chokidar.on("error",this.fileChangeError.bind(this));
+    }
+    public registerListener(observer: prayerlib.IObserver<string>): void {
+        super.registerListener(observer);
+    }
+    public removeListener(observer: prayerlib.IObserver<string>): void {
+        super.removeListener(observer);
+    }
+    public notifyObservers(eventType: prayerlib.EventsType, fileName: string, error?: Error): void {
+        super.notifyObservers(eventType, fileName, error);
+    }
+    private fileChangedEvent(pathName:string)
+    {
+        try{
+        this.notifyObservers(prayerlib.EventsType.OnNext,pathName);
+        }
+        catch(err)
+        {
+            this.notifyObservers(prayerlib.EventsType.OnError,pathName,err)
+        }
+
+    }
+    private fileChangeError(error:Error)
+    {
+        this.notifyObservers(prayerlib.EventsType.OnError,this._pathName,error);
+    }
+}
+
+export class ConfigEventListener implements prayerlib.IObserver<string>
+{
+    private _prayerAppManager: manager.PrayersAppManager
+    constructor(prayerAppManager: manager.PrayersAppManager) {
+        this._prayerAppManager = prayerAppManager;
+    }
+    onCompleted(): void {
+          }
+    onError(error: Error): void {
+      debug(error);
+    }
+    onNext(value: string): void {
+        debug(`${value} config file has been saved`);
+        this._prayerAppManager.refreshPrayerManagerByConfig();
     }
 }

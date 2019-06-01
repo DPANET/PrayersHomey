@@ -13,6 +13,7 @@ const athanTypes: any = { athan_short: "assets/prayers/prayer_short.mp3", athan_
 
 export class PrayersAppManager {
 
+
     private static _prayerAppManger: PrayersAppManager;
     private _homeyPrayersTriggerAll: Homey.FlowCardTrigger<Homey.FlowCardTrigger<any>>;
     private _homeyPrayersTriggerSpecific: Homey.FlowCardTrigger<Homey.FlowCardTrigger<any>>;
@@ -20,6 +21,8 @@ export class PrayersAppManager {
     private _prayersRefreshEventProvider: events.PrayersRefreshEventProvider;
     private _prayersRefreshEventListener: events.PrayerRefreshEventListener;
     private _prayerEventProvider: events.PrayersEventProvider; ///= new event.PrayersEventProvider(prayerManager);
+    private _configEventListener: events.ConfigEventListener;
+    private _configEventProvider: events.ConfigEventProvider;
     public get prayerEventProvider(): events.PrayersEventProvider {
         return this._prayerEventProvider;
     }
@@ -53,7 +56,7 @@ export class PrayersAppManager {
             appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
             appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
                 .createPrayerTimeBuilder(null, appmanager._prayerConfig)
-                .setPrayerMethod(prayerlib.Methods.Mecca)
+                //.setPrayerMethod(prayerlib.Methods.Mecca)
               //  .setPrayerPeriod(prayerlib.DateUtil.getNowDate(), prayerlib.DateUtil.addDay(1, prayerlib.DateUtil.getNowDate()))
                 .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
                 .createPrayerTimeManager();
@@ -74,6 +77,10 @@ export class PrayersAppManager {
         this._prayersRefreshEventProvider = new events.PrayersRefreshEventProvider(this._prayerManager);
         this._prayersRefreshEventListener = new events.PrayerRefreshEventListener(this);
         this._prayersRefreshEventProvider.registerListener(this._prayersRefreshEventListener);
+        this._configEventProvider = new events.ConfigEventProvider('config/config.json');
+        this._configEventListener = new events.ConfigEventListener(this);
+        this._configEventProvider.registerListener(this._configEventListener);
+
     }
 
     //schedule refresh of prayers schedule based on date 
@@ -144,9 +151,10 @@ export class PrayersAppManager {
             });
     }
     //refresh prayer manager in case we reach the end of the array.
-    public refreshPrayerManager(): void {
+    public refreshPrayerManagerByDate(): void {
         let startDate: Date = prayerlib.DateUtil.getNowDate();
         let endDate: Date = prayerlib.DateUtil.addMonth(1, startDate);
+        
         this.prayerManager.updatePrayersDate(startDate, endDate)
             .then((value) => {
                 this.prayerEventProvider.startPrayerSchedule(value)
@@ -158,6 +166,22 @@ export class PrayersAppManager {
                 let date: Date = prayerlib.DateUtil.addDay(1, startDate);
                 this.scheduleRefresh(date);
             });
+    }
+   public async refreshPrayerManagerByConfig() {
+    let startDate: Date = prayerlib.DateUtil.getNowDate();
+    let endDate: Date = prayerlib.DateUtil.addMonth(1, startDate);
+       try{
+        appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
+        appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
+            .createPrayerTimeBuilder(null, appmanager._prayerConfig)
+            .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
+            .createPrayerTimeManager();
+        }catch(err)
+        {
+            console.log(err);
+            let date: Date = prayerlib.DateUtil.addDay(1, startDate);
+            this.scheduleRefresh(date);
+        }
     }
 }
 export var appmanager: PrayersAppManager = PrayersAppManager.prayerAppManger;
