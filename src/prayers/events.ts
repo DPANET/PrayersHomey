@@ -1,5 +1,6 @@
 const dotenv = require('dotenv').config();
 const debug = require('debug')('app:router');
+import config= require('config');
 import * as prayerlib from '@dpanet/prayers-lib';
 import * as manager from './manager';
 const to = require('await-to-js').default;
@@ -7,6 +8,8 @@ import { isNullOrUndefined } from 'util';
 import * as cron from 'cron';
 import { DateUtil } from '@dpanet/prayers-lib';
 import chokidar = require('chokidar');
+import * as sentry from "@sentry/node";
+sentry.init({ dsn: config.get("DSN") });
 
 
 export class PrayersEventProvider extends prayerlib.EventProvider<prayerlib.IPrayersTiming>

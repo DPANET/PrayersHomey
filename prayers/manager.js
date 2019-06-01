@@ -7,6 +7,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const config = require("config");
 const dotenv = require("dotenv");
 dotenv.config();
 const Debug = require("debug");
@@ -15,6 +16,8 @@ const prayerlib = __importStar(require("@dpanet/prayers-lib"));
 const events = __importStar(require("./events"));
 const Homey = require("homey");
 const util_1 = require("util");
+const sentry = __importStar(require("@sentry/node"));
+sentry.init({ dsn: config.get("DSN") });
 const to = require('await-to-js').default;
 const athanTypes = { athan_short: "assets/prayers/prayer_short.mp3", athan_full: "assets/prayers/prayer_full.mp3" };
 class PrayersAppManager {
@@ -56,6 +59,7 @@ class PrayersAppManager {
             console.log(exports.appmanager._prayerManager.getUpcomingPrayer());
         }
         catch (err) {
+            sentry.captureException(err);
             console.log(err);
         }
     }
@@ -91,6 +95,7 @@ class PrayersAppManager {
                 return value;
             })
                 .catch((err) => {
+                sentry.captureException(err);
                 console.log(err);
                 return Promise.resolve(false);
             });
@@ -108,10 +113,12 @@ class PrayersAppManager {
         Homey.ManagerAudio.playMp3(sampleId, fileName)
             .then(() => {
             console.log(err);
+            sentry.captureException(err);
             return Promise.resolve(false);
         })
             .catch((err) => {
             console.log(err);
+            sentry.captureException(err);
             return Promise.resolve(true);
         });
         return Promise.resolve(true);
@@ -125,12 +132,14 @@ class PrayersAppManager {
             .then(() => console.log('event all run'))
             .catch((err) => {
             this.prayerEventProvider.stopPrayerSchedule();
+            sentry.captureException(err);
             console.log(err);
         });
         this._homeyPrayersTriggerSpecific.trigger({ prayer_name: prayerName, prayer_time: prayerTimeZone }, null)
             .then(() => console.log('event specific run'))
             .catch((err) => {
             this.prayerEventProvider.stopPrayerSchedule();
+            sentry.captureException(err);
             console.log(err);
         });
     }
@@ -146,6 +155,7 @@ class PrayersAppManager {
             //retry every date until the prayer refresh task is done.
             .catch((err) => {
             console.log(err);
+            sentry.captureException(err);
             let date = prayerlib.DateUtil.addDay(1, startDate);
             this.scheduleRefresh(date);
         });
@@ -162,6 +172,7 @@ class PrayersAppManager {
         }
         catch (err) {
             console.log(err);
+            sentry.captureException(err);
             let date = prayerlib.DateUtil.addDay(1, startDate);
             this.scheduleRefresh(date);
         }

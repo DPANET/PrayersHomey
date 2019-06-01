@@ -9,11 +9,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = require('dotenv').config();
 const debug = require('debug')('app:router');
+const config = require("config");
 const prayerlib = __importStar(require("@dpanet/prayers-lib"));
 const to = require('await-to-js').default;
 const util_1 = require("util");
 const cron = __importStar(require("cron"));
 const chokidar = require("chokidar");
+const sentry = __importStar(require("@sentry/node"));
+sentry.init({ dsn: config.get("DSN") });
 class PrayersEventProvider extends prayerlib.EventProvider {
     constructor(prayerManager) {
         super();

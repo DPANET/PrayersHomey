@@ -1,3 +1,4 @@
+import config= require('config');
 import dotenv = require('dotenv');
 dotenv.config();
 import Debug = require('debug');
@@ -7,6 +8,8 @@ import * as events from './events';
 import Homey = require('homey');
 import { isNullOrUndefined } from 'util';
 
+import * as sentry from "@sentry/node";
+sentry.init({ dsn: config.get("DSN") });
 const to = require('await-to-js').default;
 
 const athanTypes: any = { athan_short: "assets/prayers/prayer_short.mp3", athan_full: "assets/prayers/prayer_full.mp3" };
@@ -65,6 +68,7 @@ export class PrayersAppManager {
             console.log(appmanager._prayerManager.getUpcomingPrayer());
         }
         catch (err) {
+            sentry.captureException(err);
             console.log(err);
         }
     }
@@ -103,6 +107,7 @@ export class PrayersAppManager {
                         return value;
                     })
                     .catch((err) => {
+                        sentry.captureException(err);
                         console.log(err);
                         return Promise.resolve(false);
                     });
@@ -122,10 +127,12 @@ export class PrayersAppManager {
         Homey.ManagerAudio.playMp3(sampleId, fileName)
             .then(() => {
                 console.log(err);
+                sentry.captureException(err);
                 return Promise.resolve(false);
             })
             .catch((err) => {
                 console.log(err);
+                sentry.captureException(err);
                 return Promise.resolve(true);
             });
         return Promise.resolve(true);
@@ -140,6 +147,7 @@ export class PrayersAppManager {
             .then(() => console.log('event all run'))
             .catch((err) => {
                 this.prayerEventProvider.stopPrayerSchedule();
+                sentry.captureException(err);
                 console.log(err);
             });
 
@@ -147,6 +155,7 @@ export class PrayersAppManager {
             .then(() => console.log('event specific run'))
             .catch((err) => {
                 this.prayerEventProvider.stopPrayerSchedule();
+                sentry.captureException(err);
                 console.log(err);
             });
     }
@@ -163,6 +172,7 @@ export class PrayersAppManager {
             //retry every date until the prayer refresh task is done.
             .catch((err) => {
                 console.log(err);
+                sentry.captureException(err);
                 let date: Date = prayerlib.DateUtil.addDay(1, startDate);
                 this.scheduleRefresh(date);
             });
@@ -179,6 +189,7 @@ export class PrayersAppManager {
         }catch(err)
         {
             console.log(err);
+            sentry.captureException(err);
             let date: Date = prayerlib.DateUtil.addDay(1, startDate);
             this.scheduleRefresh(date);
         }
