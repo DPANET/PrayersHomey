@@ -5,22 +5,23 @@
         "timing": "monthly"
       },
       "calculations": {
-        "method":4,
+        "method": 4,
         "school": 0,
         "midnight": 0,
         "latitudeAdjustment": 3,
+        "adjustmentMethod": 1,
         "adjustments": [
           {
             "prayerName": "Imsak",
-            "adjustments": 0
-          },
-          {
-            "prayerName": "Fajr",
             "adjustments": 2
           },
           {
+            "prayerName": "Fajr",
+            "adjustments": 1
+          },
+          {
             "prayerName": "Sunrise",
-            "adjustments": -3
+            "adjustments": 3
           },
           {
             "prayerName": "Dhuhr",
@@ -32,18 +33,16 @@
           },
           {
             "prayerName": "Maghrib",
-            "adjustments": 4
+            "adjustments": 3
           },
           {
             "prayerName": "Sunset",
             "adjustments": 0
           },
-
           {
             "prayerName": "Isha",
-            "adjustments": -10
+            "adjustments": -32
           },
-
           {
             "prayerName": "Midnight",
             "adjustments": 0
@@ -55,10 +54,10 @@
       "location": {
         "latitude": 24.444103,
         "longtitude": 54.370867,
-        "city": "Dubai",
+        "city": "Abu Dhabi",
         "countryCode": "AE",
         "countryName": "United Arab Emirates",
-        "address": "Dubai"
+        "address": "Abu Dhabi - United Arab Emirates"
       },
       "timezone": {
         "timeZoneId": "Asia/Dubai",
