@@ -32,7 +32,8 @@ class PrayersEventProvider extends prayerlib.EventProvider {
         super.notifyObservers(eventType, prayersTime, error);
     }
     startPrayerSchedule(prayerManager) {
-        this.stopPrayerSchedule();
+        if (!util_1.isNullOrUndefined(this._upcomingPrayerEvent))
+            this.stopPrayerSchedule();
         if (!util_1.isNullOrUndefined(prayerManager))
             this._prayerManager = prayerManager;
         // if (isNullOrUndefined(this._upcomingPrayerEvent) || !this._upcomingPrayerEvent.running) {

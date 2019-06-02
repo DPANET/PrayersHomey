@@ -30,6 +30,7 @@ export class PrayersEventProvider extends prayerlib.EventProvider<prayerlib.IPra
         super.notifyObservers(eventType, prayersTime, error);
     }
     public startPrayerSchedule(prayerManager?: prayerlib.IPrayerManager): void {
+        if(!isNullOrUndefined(this._upcomingPrayerEvent))
         this.stopPrayerSchedule();
         if (!isNullOrUndefined(prayerManager))
             this._prayerManager = prayerManager;
@@ -38,7 +39,7 @@ export class PrayersEventProvider extends prayerlib.EventProvider<prayerlib.IPra
         
     }
     public stopPrayerSchedule(): void {
-        if (this._upcomingPrayerEvent.running)
+        if ( this._upcomingPrayerEvent.running)
             this._upcomingPrayerEvent.stop();
     }
     private runNextPrayerSchedule(): void {
