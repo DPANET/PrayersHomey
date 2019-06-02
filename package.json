@@ -7,6 +7,16 @@
   "author": {
     "name": "Omar B."
   },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc",
+    "public:copy": "copyfiles --up 4 node_modules/@dpanet/prayerswebapp/lib/public/**/*.* settings/",
+    "html:copy": "copyfiles --f  node_modules/@dpanet/prayerswebapp/lib/index.html settings/",
+    "images:copy": "copyfiles -u 1 src/images/**/* lib/",
+    "start:server": "node --inspect lib/app.js",
+    "athom": "athom app run",
+    "start": "npm run compile && npm run public:copy && npm run html:copy && npm run athom"
+  },
   "dependencies": {
     "@dpanet/prayers-lib": "^1.3.8",
     "@dpanet/prayerswebapp": "^1.0.4",
