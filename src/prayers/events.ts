@@ -1,5 +1,4 @@
-const dotenv = require('dotenv').config();
-const debug = require('debug')('app:router');
+const debug = require('debug')(process.env.DEBUG);
 import config= require('config');
 import * as prayerlib from '@dpanet/prayers-lib';
 import * as manager from './manager';
@@ -136,12 +135,10 @@ export class ConfigEventProvider extends prayerlib.EventProvider<string>
         super();
         this._pathName= pathName;
         this._chokidar = chokidar.watch(this._pathName);
-        this._chokidar.options={
-            
 
-        }
         this._chokidar.on("change",this.fileChangedEvent.bind(this))
         this._chokidar.on("error",this.fileChangeError.bind(this));
+
     }
     public registerListener(observer: prayerlib.IObserver<string>): void {
         super.registerListener(observer);
@@ -179,9 +176,11 @@ export class ConfigEventListener implements prayerlib.IObserver<string>
           }
     onError(error: Error): void {
       debug(error);
+      console.log(error);
     }
     onNext(value: string): void {
         debug(`${value} config file has been saved`);
+        console.log(`${value} config file has been saved`);
         this._prayerAppManager.refreshPrayerManagerByConfig();
     }
 }

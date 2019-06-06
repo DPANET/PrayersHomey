@@ -1,16 +1,13 @@
+const debug = require('debug')(process.env.DEBUG);
 import config= require('config');
-import dotenv = require('dotenv');
-dotenv.config();
-import Debug = require('debug');
-const debug = Debug("1");
 import * as prayerlib from '@dpanet/prayers-lib';
 import * as events from './events';
 import Homey = require('homey');
 import { isNullOrUndefined } from 'util';
-
+import path from "path";
 import * as sentry from "@sentry/node";
 sentry.init({ dsn: config.get("DSN") });
-const to = require('await-to-js').default;
+//const to = require('await-to-js').default;
 
 const athanTypes: any = { athan_short: "assets/prayers/prayer_short.mp3", athan_full: "assets/prayers/prayer_full.mp3" };
 
@@ -26,6 +23,7 @@ export class PrayersAppManager {
     private _prayerEventProvider: events.PrayersEventProvider; ///= new event.PrayersEventProvider(prayerManager);
     private _configEventListener: events.ConfigEventListener;
     private _configEventProvider: events.ConfigEventProvider;
+    private _coinfigFilePath:string;
     public get prayerEventProvider(): events.PrayersEventProvider {
         return this._prayerEventProvider;
     }
@@ -63,6 +61,7 @@ export class PrayersAppManager {
               //  .setPrayerPeriod(prayerlib.DateUtil.getNowDate(), prayerlib.DateUtil.addDay(1, prayerlib.DateUtil.getNowDate()))
                 .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
                 .createPrayerTimeManager();
+            
             appmanager.initPrayersSchedules();
             appmanager.initEvents();
             console.log(appmanager._prayerManager.getUpcomingPrayer());
@@ -74,6 +73,7 @@ export class PrayersAppManager {
     }
     // initallize prayer scheduling and refresh events providers and listeners
     public initPrayersSchedules() {
+        this._coinfigFilePath =path.join(config.get("CONFIG_FOLDER_PATH"),config.get("PRAYER_CONFIG")) ;
         this._prayerEventProvider = new events.PrayersEventProvider(this._prayerManager);
         this._prayerEventListener = new events.PrayersEventListener(this);
         this._prayerEventProvider.registerListener(this._prayerEventListener);
@@ -81,7 +81,7 @@ export class PrayersAppManager {
         this._prayersRefreshEventProvider = new events.PrayersRefreshEventProvider(this._prayerManager);
         this._prayersRefreshEventListener = new events.PrayerRefreshEventListener(this);
         this._prayersRefreshEventProvider.registerListener(this._prayersRefreshEventListener);
-        this._configEventProvider = new events.ConfigEventProvider('config/config.json');
+        this._configEventProvider = new events.ConfigEventProvider(this._coinfigFilePath);
         this._configEventListener = new events.ConfigEventListener(this);
         this._configEventProvider.registerListener(this._configEventListener);
 
@@ -186,6 +186,7 @@ export class PrayersAppManager {
             .createPrayerTimeBuilder(null, appmanager._prayerConfig)
             .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
             .createPrayerTimeManager();
+        this.prayerEventProvider.startPrayerSchedule(appmanager._prayerManager);
         }catch(err)
         {
             console.log(err);

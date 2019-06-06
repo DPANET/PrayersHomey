@@ -7,8 +7,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv = require('dotenv').config();
-const debug = require('debug')('app:router');
+const debug = require('debug')(process.env.DEBUG);
 const config = require("config");
 const prayerlib = __importStar(require("@dpanet/prayers-lib"));
 const to = require('await-to-js').default;
@@ -126,7 +125,6 @@ class ConfigEventProvider extends prayerlib.EventProvider {
         super();
         this._pathName = pathName;
         this._chokidar = chokidar.watch(this._pathName);
-        this._chokidar.options = {};
         this._chokidar.on("change", this.fileChangedEvent.bind(this));
         this._chokidar.on("error", this.fileChangeError.bind(this));
     }
@@ -160,9 +158,11 @@ class ConfigEventListener {
     }
     onError(error) {
         debug(error);
+        console.log(error);
     }
     onNext(value) {
         debug(`${value} config file has been saved`);
+        console.log(`${value} config file has been saved`);
         this._prayerAppManager.refreshPrayerManagerByConfig();
     }
 }

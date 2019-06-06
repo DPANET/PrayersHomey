@@ -9,12 +9,18 @@ import {App} from "@dpanet/prayerswebapp/lib/routes/main.router"
 class PrayersApp extends Homey.App {
 
     onInit() {
+        try{
         this.log(` Prayers Alert App is running! `);
         let app:App = new App([new prayersController(),new mainController()]);
         setTimeout(() => {            
             app.listen();
         }, 5000);   
         manager.PrayersAppManager.initApp();
+    }catch(err)
+    {
+        this.log(err);
+    }
+
     }
 }
 function cloneConfig()

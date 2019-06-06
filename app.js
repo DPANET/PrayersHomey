@@ -20,12 +20,17 @@ const main_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/con
 const main_router_1 = require("@dpanet/prayerswebapp/lib/routes/main.router");
 class PrayersApp extends Homey.App {
     onInit() {
-        this.log(` Prayers Alert App is running! `);
-        let app = new main_router_1.App([new prayers_controller_1.default(), new main_controller_1.default()]);
-        setTimeout(() => {
-            app.listen();
-        }, 5000);
-        manager.PrayersAppManager.initApp();
+        try {
+            this.log(` Prayers Alert App is running! `);
+            let app = new main_router_1.App([new prayers_controller_1.default(), new main_controller_1.default()]);
+            setTimeout(() => {
+                app.listen();
+            }, 5000);
+            manager.PrayersAppManager.initApp();
+        }
+        catch (err) {
+            this.log(err);
+        }
     }
 }
 function cloneConfig() {

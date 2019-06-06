@@ -6,19 +6,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const debug = require('debug')(process.env.DEBUG);
 const config = require("config");
-const dotenv = require("dotenv");
-dotenv.config();
-const Debug = require("debug");
-const debug = Debug("1");
 const prayerlib = __importStar(require("@dpanet/prayers-lib"));
 const events = __importStar(require("./events"));
 const Homey = require("homey");
 const util_1 = require("util");
+const path_1 = __importDefault(require("path"));
 const sentry = __importStar(require("@sentry/node"));
 sentry.init({ dsn: config.get("DSN") });
-const to = require('await-to-js').default;
+//const to = require('await-to-js').default;
 const athanTypes = { athan_short: "assets/prayers/prayer_short.mp3", athan_full: "assets/prayers/prayer_full.mp3" };
 class PrayersAppManager {
     get prayerEventProvider() {
@@ -65,6 +66,7 @@ class PrayersAppManager {
     }
     // initallize prayer scheduling and refresh events providers and listeners
     initPrayersSchedules() {
+        this._coinfigFilePath = path_1.default.join(config.get("CONFIG_FOLDER_PATH"), config.get("PRAYER_CONFIG"));
         this._prayerEventProvider = new events.PrayersEventProvider(this._prayerManager);
         this._prayerEventListener = new events.PrayersEventListener(this);
         this._prayerEventProvider.registerListener(this._prayerEventListener);
@@ -72,7 +74,7 @@ class PrayersAppManager {
         this._prayersRefreshEventProvider = new events.PrayersRefreshEventProvider(this._prayerManager);
         this._prayersRefreshEventListener = new events.PrayerRefreshEventListener(this);
         this._prayersRefreshEventProvider.registerListener(this._prayersRefreshEventListener);
-        this._configEventProvider = new events.ConfigEventProvider('config/config.json');
+        this._configEventProvider = new events.ConfigEventProvider(this._coinfigFilePath);
         this._configEventListener = new events.ConfigEventListener(this);
         this._configEventProvider.registerListener(this._configEventListener);
     }
@@ -169,6 +171,7 @@ class PrayersAppManager {
                 .createPrayerTimeBuilder(null, exports.appmanager._prayerConfig)
                 .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
                 .createPrayerTimeManager();
+            this.prayerEventProvider.startPrayerSchedule(exports.appmanager._prayerManager);
         }
         catch (err) {
             console.log(err);
