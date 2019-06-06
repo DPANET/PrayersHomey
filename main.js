@@ -7,5 +7,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv = require("dotenv");
+dotenv.config({ path: '/userdata/config' });
 const manager = __importStar(require("./prayers/manager"));
 manager.PrayersAppManager.initApp();

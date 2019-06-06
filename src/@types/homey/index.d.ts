@@ -1,7 +1,7 @@
 
  declare module 'homey' 
 {
- 
+  export var env:any;
   import { EventEmitter } from "events";
   export type i18n = string|any;
  // import * as Homey from 'homey';

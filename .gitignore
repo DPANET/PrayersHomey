@@ -1,5 +1,6 @@
 .env
 env.json
 src/env.json
-.env.override
-config/default.json
+env.override
+config/
+config/config.json

@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -6,11 +9,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Homey = require("homey");
+const fs_extra_1 = __importDefault(require("fs-extra"));
+cloneConfig();
+const dotenv = require('dotenv').config({ path: Homey.env.NODE_CONFIG_DIR });
 const manager = __importStar(require("./prayers/manager"));
 const prayers_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/prayers.controller"));
 const main_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/main.controller"));
@@ -24,5 +27,8 @@ class PrayersApp extends Homey.App {
         }, 5000);
         manager.PrayersAppManager.initApp();
     }
+}
+function cloneConfig() {
+    fs_extra_1.default.copySync(Homey.env.NODE_CONFIG_SOURCE, Homey.env.NODE_CONFIG_DIR, { overwrite: false });
 }
 module.exports = PrayersApp;
