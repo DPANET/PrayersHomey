@@ -134,7 +134,7 @@ export class ConfigEventProvider extends prayerlib.EventProvider<string>
     constructor(pathName: string) {
         super();
         this._pathName= pathName;
-        this._chokidar = chokidar.watch(this._pathName);
+        this._chokidar = chokidar.watch(this._pathName,{awaitWriteFinish:true,persistent:true,ignorePermissionErrors:true,usePolling :true});
 
         this._chokidar.on("change",this.fileChangedEvent.bind(this))
         this._chokidar.on("error",this.fileChangeError.bind(this));
@@ -178,9 +178,9 @@ export class ConfigEventListener implements prayerlib.IObserver<string>
       debug(error);
       console.log(error);
     }
-    onNext(value: string): void {
+   async onNext(value: string): Promise<void> {
         debug(`${value} config file has been saved`);
         console.log(`${value} config file has been saved`);
-        this._prayerAppManager.refreshPrayerManagerByConfig();
+        await this._prayerAppManager.refreshPrayerManagerByConfig();
     }
 }
