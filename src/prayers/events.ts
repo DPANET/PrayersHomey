@@ -179,7 +179,7 @@ export class ConfigEventListener implements prayerlib.IObserver<string>
       console.log(error);
     }
    async onNext(value: string): Promise<void> {
-        debug(`${value} config file has been saved`);
+      //  debug(`${value} config file has been saved`);
         console.log(`${value} config file has been saved`);
         await this._prayerAppManager.refreshPrayerManagerByConfig();
     }

@@ -217,10 +217,63 @@ input[type="button"].button-primary:focus {
   color: #FFF;
   background-color: #1EAEDB;
   border-color: #1EAEDB; }
+/* Search Box
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.location{
+  overflow: visible;
+}
+.search-form
+{
+  position: relative;
+  height: 100px;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  margin: 0px -15px 10px -15px;
+  background: #dcdcdc66;
+}
+.search-form > *
+{
+  margin: 0;
+  
+}
+.search-form .search-input
+{
+  margin: 0;
+  width:80%;
+  border-right: none;
+  border-radius: 4px 0px 0px 4px;  
+}
+.search-form .search-button
+{
+  position:relative;
+  background:#1EAEDB;
+  width: 40px;
+  padding:10px;
+  border:none ;
+  border-left: none !important;
+  border-radius: 0px 4px 4px 0px;
+}
+ .icon
+{
+  position: absolute;
+  align-content: center;
+  content: url(../images/search-icon.svg);
+  top:50%;
+  left:50%;
+  width: 50%;
+  height: 50%;
+  transform:translate(-50%, -50%);
 
-
+  color: white;
+}
 /* Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+input::placeholder
+{
+  color: #bbb;
+}
 input[type="email"],
 input[type="number"],
 input[type="search"],
@@ -291,7 +344,7 @@ label > .label-body {
   margin-bottom:10px;; 
   grid-auto-rows: auto;
 }
-.calcuation-form-container
+.calcuation-form-container,.location-form-container
 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
@@ -300,6 +353,8 @@ label > .label-body {
   align-items: start;
   grid-auto-rows: auto;
 }
+
+
 .short-input
 {
   width: 100px;
@@ -307,14 +362,20 @@ label > .label-body {
 .prayers-time-form-container .button-layout{
   grid-row: 4/auto;
 }
-
+.header-title{
+  position: relative;
+  display: inline-block;
+}
 .help-icon
 {
- 
-  display: inline;
-  right: 0;
-  height: 16px;
-  width: 15px;
+  display: inline-block;
+  position: absolute;
+  top:50%;
+  left:100%;
+  padding-left: 22px;
+  width: 50%;
+  height: 50%;
+  transform:translate(-50%, -50%);
   content: url(../images/help-icon.svg);
 }
 /* Lists
@@ -454,8 +515,13 @@ there.
 @media (min-width: 400px) {}
 
 /* Larger than phablet (also point when grid becomes active) */
-@media (min-width: 550px) {
-
+@media (min-width: 600px) {
+  .search-form .search-input
+  {
+    min-width: initial;
+    max-width: initial;
+    width:400px;
+  }
 
 }
 

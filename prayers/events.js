@@ -161,9 +161,9 @@ class ConfigEventListener {
         console.log(error);
     }
     async onNext(value) {
-        debug(`${value} config file has been saved`);
+        //  debug(`${value} config file has been saved`);
         console.log(`${value} config file has been saved`);
-        // await this._prayerAppManager.refreshPrayerManagerByConfig();
+        await this._prayerAppManager.refreshPrayerManagerByConfig();
     }
 }
 exports.ConfigEventListener = ConfigEventListener;

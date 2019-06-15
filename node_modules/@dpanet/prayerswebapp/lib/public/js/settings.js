@@ -14,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const prayerlib = __importStar(require("../../models/prayers.model"));
 const moment_1 = __importDefault(require("moment"));
 const noty_1 = __importDefault(require("noty"));
+const google = require("google");
 //import { isNullOrUndefined } from 'util';
 // const DataTable = require("datatables.net")(window, $);
 //const daterangepicker = require("daterangepicker");
@@ -26,6 +27,7 @@ async function buildObject() {
             initForm();
             await loadPrayerPrayerSettings();
             await loadPrayerAdjustments();
+            await loadPrayerLocation();
         }
         catch (err) {
             let noty = loadNotification();
@@ -35,6 +37,21 @@ async function buildObject() {
     });
 }
 exports.buildObject = buildObject;
+async function loadPrayerLocation() {
+    return await $.ajax({
+        url: "PrayerManager/PrayersLocation",
+        // error: genericErrorHandler,
+        dataType: "json",
+        success: (prayersLocation) => {
+            loadLocationSettings(prayersLocation);
+        },
+    }).catch((jqXHR, textStatus, errorThrown) => { throw new Error(jqXHR.responseJSON.message); });
+}
+function loadLocationSettings(prayersLocation) {
+    $("#city").val(`${prayersLocation.city}/ ${prayersLocation.countryCode}`);
+    $("#coordinates").val(`(${prayersLocation.latitude},${prayersLocation.longtitude})`);
+    $("#time-zone").val(`(${prayersLocation.timeZoneId})`);
+}
 function initForm() {
     $("#view-button").on("click", refreshDataTable);
     $("#submit-button").on("click", saveDataTable);
@@ -43,6 +60,40 @@ function initForm() {
         startDate: moment_1.default(new Date()),
         endDate: moment_1.default(new Date()).add(1, "M") //moment(prayerSettings.endDate)
     });
+    $('#search-button').on("click", searchLocation);
+    // initMap();
+}
+function initMap() {
+    let options = {
+        types: ['address']
+    };
+    let searchinput = document.getElementById('search-input');
+    let autocomplete = new google.maps.places.Autocomplete(searchinput);
+    autocomplete.addListener('place_changed', () => {
+        // $('#search-input').val(autocomplete.getPlace());
+    });
+}
+async function searchLocation() {
+    try {
+        let searchText = $('#search-input').val();
+        if (!isNullOrUndefined(searchText)) {
+            await $.ajax({
+                url: "PrayerManager/SearchLocation",
+                // error: genericErrorHandler,
+                dataType: "JSON",
+                type: "GET",
+                data: { 'address': searchText },
+                success: async (prayerLocationSettings) => {
+                    loadLocationSettings(prayerLocationSettings);
+                },
+            }).catch((jqXHR, textStatus, errorThrown) => { throw new Error(jqXHR.responseJSON.message); });
+        }
+    }
+    catch (err) {
+        let noty = loadNotification();
+        noty.setText(err.message, true);
+        noty.show();
+    }
 }
 async function reloadSettings() {
     await $.ajax({
@@ -53,6 +104,7 @@ async function reloadSettings() {
         success: async () => {
             await loadPrayerPrayerSettings();
             await loadPrayerAdjustments();
+            await loadPrayerLocation();
         },
     }).catch((jqXHR, textStatus, errorThrown) => { throw new Error(jqXHR.responseJSON.message); });
 }
@@ -95,9 +147,41 @@ function refreshPrayerConfigForm() {
     };
     return prayersConfig;
 }
-function validateForm(prayersConfig) {
-    let validator = prayerlib.ConfigValidator.createValidator();
+function refreshLocationConfig() {
+    let coordinates = $("#coordinates").val();
+    let latlngArray = new Array();
+    coordinates = coordinates.replace("(", "");
+    coordinates = coordinates.replace(")", "");
+    latlngArray = coordinates.split(",");
+    let latlng = {
+        location: {
+            latitude: parseFloat(latlngArray[0]),
+            longtitude: parseFloat(latlngArray[1]),
+        },
+        timezone: {
+            timeZoneId: null,
+            timeZoneName: null,
+            rawOffset: null,
+            dstOffset: null
+        }
+    };
+    return latlng;
+}
+function validatePrayerForm(prayersConfig) {
+    let validator = prayerlib.PrayerConfigValidator.createValidator();
     let result = validator.validate(prayersConfig);
+    if (result)
+        return result;
+    else {
+        let err = validator.getValidationError();
+        let message = err.details.map((detail) => `${detail.value.label} with value ${detail.value.value}: ${detail.message}`);
+        let messageShort = message.reduce((prvs, curr, index, array) => prvs.concat('<br>', curr));
+        throw new Error(messageShort);
+    }
+}
+function validateLocationForm(locationConfig) {
+    let validator = prayerlib.LocationValidator.createValidator();
+    let result = validator.validate(locationConfig.location);
     if (result)
         return result;
     else {
@@ -110,8 +194,10 @@ function validateForm(prayersConfig) {
 async function refreshDataTable() {
     try {
         let prayersConfig = refreshPrayerConfigForm();
-        let result = validateForm(prayersConfig);
-        if (result) {
+        let locationConfig = refreshLocationConfig();
+        let prayerValidationResult = validatePrayerForm(prayersConfig);
+        let locationValidationResult = validateLocationForm(locationConfig);
+        if (prayerValidationResult && locationValidationResult) {
             if ($('#prayers-table-mobile').is(':hidden')) {
                 await loadDataTable();
                 $('#prayers-table-mobile').show();
@@ -130,11 +216,14 @@ async function refreshDataTable() {
 async function saveDataTable() {
     try {
         let prayersConfig = refreshPrayerConfigForm();
-        let result = validateForm(prayersConfig);
-        if (result) {
+        let locationConfig = refreshLocationConfig();
+        let prayerValidationResult = validatePrayerForm(prayersConfig);
+        let locationValidationResult = validateLocationForm(locationConfig);
+        if (prayerValidationResult && locationValidationResult) {
             await $.ajax({
                 url: 'PrayerManager/PrayersViewMobile', type: "POST",
-                data: JSON.stringify(prayersConfig),
+                data: JSON.stringify({ "prayerConfig": refreshPrayerConfigForm(),
+                    "locationConfig": refreshLocationConfig() }),
                 dataType: "json",
                 //crossDomain:true,
                 contentType: "application/json; charset=utf-8",
@@ -151,6 +240,7 @@ async function saveDataTable() {
 }
 async function loadDataTable() {
     $.fn.dataTable.ext.errMode = 'throw';
+    let paramlist = new Array();
     await $('#prayers-table-mobile').DataTable({
         ajax: {
             url: 'PrayerManager/PrayersViewMobile',
@@ -158,7 +248,9 @@ async function loadDataTable() {
             dataType: "json",
             data: (d) => {
                 try {
-                    return refreshPrayerConfigForm();
+                    let config = { "prayerConfig": refreshPrayerConfigForm(),
+                        "locationConfig": refreshLocationConfig() };
+                    return config;
                 }
                 catch (err) {
                     notify("error", err.message);
