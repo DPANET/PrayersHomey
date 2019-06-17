@@ -12,9 +12,9 @@ The following are the app supported features:
 You need first to configure the app through the settings page, the configurations will allow the app to show prayer times based on your location and adjust the prayer times based on different parameters and inputs.
 
 
-![Alt text](images/Settings-1.jpg) ![Alt text](images/Settings-2.jpg) ![Alt text](images/Settings-3.jpg)
+![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Settings-1.jpg) ![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Settings-2.jpg) ![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Settings-3.jpg)
 
 
 ## Flows
 The Flow will trigger the actions based on the prayer times, below examples of what actions you can do.
-![Alt text](images/Flow-1.jpg)  ![Alt text](images/Flow-2.jpg)
+![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Flow-1.jpg)  ![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Flow-2.jpg)
