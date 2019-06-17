@@ -10,3 +10,4 @@ The following are the app supported features:
 * Configure and adjust prayers time based on location and different calculation methods.
 ## Getting Started
 You need first to configure the app through settings page, the settings will allow the app to show prayer times based on your location, and adjust the prayer times based on different parameters and inputs.
+![Alt text](images/Flow01.jpg)
