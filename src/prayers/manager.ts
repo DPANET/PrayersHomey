@@ -51,15 +51,17 @@ export class PrayersAppManager {
         this._prayerManager = value;
     }
     private _prayerConfig: prayerlib.IPrayersConfig;
+    private _locationConfig:prayerlib.ILocationConfig;
     // private  _prayerEvents:prayerlib.
     static async initApp(): Promise<void> {
         try {
             appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
+            appmanager._locationConfig =await new prayerlib.Configurator().getLocationConfig();
             appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
-                .createPrayerTimeBuilder(null, appmanager._prayerConfig)
+                .createPrayerTimeBuilder(appmanager._locationConfig, appmanager._prayerConfig)
                 //.setPrayerMethod(prayerlib.Methods.Mecca)
               //  .setPrayerPeriod(prayerlib.DateUtil.getNowDate(), prayerlib.DateUtil.addDay(1, prayerlib.DateUtil.getNowDate()))
-                .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
+             //   .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
                 .createPrayerTimeManager();
             
             appmanager.initPrayersSchedules();

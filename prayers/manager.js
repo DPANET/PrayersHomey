@@ -49,11 +49,12 @@ class PrayersAppManager {
     static async initApp() {
         try {
             exports.appmanager._prayerConfig = await new prayerlib.Configurator().getPrayerConfig();
+            exports.appmanager._locationConfig = await new prayerlib.Configurator().getLocationConfig();
             exports.appmanager._prayerManager = await prayerlib.PrayerTimeBuilder
-                .createPrayerTimeBuilder(null, exports.appmanager._prayerConfig)
+                .createPrayerTimeBuilder(exports.appmanager._locationConfig, exports.appmanager._prayerConfig)
                 //.setPrayerMethod(prayerlib.Methods.Mecca)
                 //  .setPrayerPeriod(prayerlib.DateUtil.getNowDate(), prayerlib.DateUtil.addDay(1, prayerlib.DateUtil.getNowDate()))
-                .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
+                //   .setLocationByCoordinates(Homey.ManagerGeolocation.getLatitude(), Homey.ManagerGeolocation.getLongitude())
                 .createPrayerTimeManager();
             exports.appmanager.initPrayersSchedules();
             exports.appmanager.initEvents();
