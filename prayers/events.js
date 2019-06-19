@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug = require('debug')(process.env.DEBUG);
-const config = require("config");
+const config = require("nconf");
 const prayerlib = __importStar(require("@dpanet/prayers-lib"));
 const to = require('await-to-js').default;
 const util_1 = require("util");

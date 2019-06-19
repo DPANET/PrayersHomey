@@ -1,11 +1,15 @@
 import Homey = require('homey');
+import config = require('nconf');
+config.file('env.json');
+process.env.DEBUG= config.get("DEBUG");
 import fs from "fs-extra";
 cloneConfig();
-const dotenv = require('dotenv').config({ path: Homey.env.NODE_CONFIG_DIR });
 import * as manager from './prayers/manager';
 import prayersController from "@dpanet/prayerswebapp/lib/controllers/prayers.controller";
 import mainController from "@dpanet/prayerswebapp/lib/controllers/main.controller";
-import {App} from "@dpanet/prayerswebapp/lib/routes/main.router"
+import {App} from "@dpanet/prayerswebapp/lib/routes/main.router";
+import * as sentry from "@sentry/node";
+sentry.init({ dsn: config.get("DSN") });
 class PrayersApp extends Homey.App {
 
     onInit() {
@@ -18,6 +22,7 @@ class PrayersApp extends Homey.App {
         manager.PrayersAppManager.initApp();
     }catch(err)
     {
+        sentry.captureException(err);
         this.log(err);
     }
 
@@ -25,7 +30,7 @@ class PrayersApp extends Homey.App {
 }
 function cloneConfig()
 {
-    fs.copySync(Homey.env.NODE_CONFIG_SOURCE,Homey.env.NODE_CONFIG_DIR,{overwrite:false});
+    fs.copySync(Homey.env.NODE_CONFIG_DIR,Homey.env.CONFIG_FOLDER_PATH,{overwrite:false});
 }
 module.exports = PrayersApp;
 

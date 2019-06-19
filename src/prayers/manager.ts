@@ -1,5 +1,5 @@
 const debug = require('debug')(process.env.DEBUG);
-import config= require('config');
+import config= require('nconf');
 import * as prayerlib from '@dpanet/prayers-lib';
 import * as events from './events';
 import Homey = require('homey');
