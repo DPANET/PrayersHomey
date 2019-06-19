@@ -15,7 +15,7 @@ const config = require("nconf");
 config.file('env.json');
 process.env.DEBUG = config.get("DEBUG");
 const fs_extra_1 = __importDefault(require("fs-extra"));
-cloneConfig();
+//cloneConfig();
 const manager = __importStar(require("./prayers/manager"));
 const prayers_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/prayers.controller"));
 const main_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/main.controller"));
