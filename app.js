@@ -39,6 +39,6 @@ class PrayersApp extends Homey.App {
     }
 }
 function cloneConfig() {
-    fs_extra_1.default.copySync(Homey.env.NODE_CONFIG_DIR, Homey.env.CONFIG_FOLDER_PATH, { overwrite: false });
+    fs_extra_1.default.copySync(Homey.env.NODE_CONFIG_DIR, Homey.env.CONFIG_FOLDER_PATH, { overwrite: true });
 }
 module.exports = PrayersApp;
