@@ -17,4 +17,5 @@ You need first to configure the app through the settings page, the configuration
 
 ## Flows
 The Flow will trigger the actions based on the prayer times, below examples of what actions you can do.
-![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Flow-1.jpg)  ![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Flow-2.jpg)
+![Alt text](https://ibb.co/n61QyD8)  
+![Alt text](https://github.com/DPANET/PrayersHomey/blob/master/images/Flow-2.jpg)
