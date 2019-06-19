@@ -17,5 +17,6 @@ You need first to configure the app through the settings page, the configuration
 
 ## Flows
 The Flow will trigger the actions based on the prayer times, below examples of what actions you can do.
+<br/>
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/JmprTzF/Flow-1.jpg" alt="Flow-1" border="0" /></a>
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/tJpQV8G/Flow-2.jpg" alt="Flow-2" border="0"></a>
