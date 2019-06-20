@@ -3,7 +3,7 @@ import config = require('nconf');
 config.file('env.json');
 process.env.DEBUG= config.get("DEBUG");
 import fs from "fs-extra";
-//cloneConfig();
+cloneConfig();
 import * as manager from './prayers/manager';
 import prayersController from "@dpanet/prayerswebapp/lib/controllers/prayers.controller";
 import mainController from "@dpanet/prayerswebapp/lib/controllers/main.controller";
