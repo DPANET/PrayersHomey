@@ -1,6 +1,6 @@
 {
     "id": "com.prayerssapp",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "compatibility": " >=2.0.0",
     "sdk": 2,
     "brandColor": "#2698DD",

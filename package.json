@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@dpanet/prayers-lib": "^1.3.24",
-    "@dpanet/prayerswebapp": "^1.2.3",
+    "@dpanet/prayerswebapp": "^1.2.5",
     "@sentry/node": "^5.4.0",
     "chokidar": "^3.0.1",
     "cron": "^1.7.1",

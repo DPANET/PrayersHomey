@@ -19,6 +19,7 @@ cloneConfig();
 const manager = __importStar(require("./prayers/manager"));
 const prayers_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/prayers.controller"));
 const main_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/main.controller"));
+const keys_controller_1 = __importDefault(require("@dpanet/prayerswebapp/lib/controllers/keys.controller"));
 const main_router_1 = require("@dpanet/prayerswebapp/lib/routes/main.router");
 const sentry = __importStar(require("@sentry/node"));
 sentry.init({ dsn: config.get("DSN") });
@@ -26,7 +27,7 @@ class PrayersApp extends Homey.App {
     onInit() {
         try {
             this.log(` Prayers Alert App is running! `);
-            let app = new main_router_1.App([new prayers_controller_1.default(), new main_controller_1.default()]);
+            let app = new main_router_1.App([new prayers_controller_1.default(), new main_controller_1.default(), new keys_controller_1.default()]);
             setTimeout(() => {
                 app.listen();
             }, 5000);
