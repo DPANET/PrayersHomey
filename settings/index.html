@@ -3,10 +3,10 @@
 </head>
 <body>
 <script type="text/javascript">
-  async function onHomeyReady( Homey ){
+  function onHomeyReady( Homey ){
     // ...
    // buidObject();
-
+    Homey.openURL(`${location.origin}/api/app/com.prayerssapp/settings`);
     Homey.ready();
   }
   </script>

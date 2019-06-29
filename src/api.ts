@@ -14,12 +14,6 @@ module.exports=[
         let queryString: any =
         {
             uri: url,
-            qs: {
-                uri: url,
-                headers:{
-                    'User-Agent':'Homey-Assistant'
-                }
-            },
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
@@ -38,12 +32,6 @@ module.exports=[
         let queryString: any =
         {
             uri: url,
-            qs: {
-                uri: url,
-                headers:{
-                    'User-Agent':'Homey-Assistant'
-                }
-            },
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
@@ -62,12 +50,6 @@ module.exports=[
         let queryString: any =
         {
             uri: url,
-            qs: {
-                uri: url,
-                headers:{
-                    'User-Agent':'Homey-Assistant'
-                }
-            },
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
@@ -86,12 +68,6 @@ module.exports=[
         let queryString: any =
         {
             uri: url,
-            qs: {
-                uri: url,
-                headers:{
-                    'User-Agent':'Homey-Assistant'
-                }
-            },
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
@@ -106,19 +82,14 @@ module.exports=[
     public:true,
     fn: async (args:any,callback:any)=>
     {
-        let url:string=`${mainUrl}/PrayerManager/SearchLocation?${args.query}`;
+        let url:string=`${mainUrl}/PrayerManager/SearchLocation`;
         let queryString: any =
         {
             uri: url,
-            qs: {
-                uri: url,
-                headers:{
-                    'User-Agent':'Homey-Assistant'
-                }
-            
-            },
+            qs: args.query,
             method: 'GET',
             json: true,
+            useQuerystring:true,
             resolveWithFullResponse: false
 
         };
@@ -135,13 +106,6 @@ module.exports=[
         let queryString: any =
         {
             uri: url,
-            qs: {
-                uri: url,
-                headers:{
-                    'User-Agent':'Homey-Assistant'
-                }
-            
-            },
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
@@ -156,13 +120,16 @@ module.exports=[
     public:true,
     fn: async (args:any,callback:any)=>
     {
-        let url:string=`${mainUrl}/PrayerManager/PrayersViewMobile?${args.query}`;
+        let url:string=`${mainUrl}/PrayerManager/PrayersViewMobile`;
         let queryString: any =
         {
             uri: url,
             method: 'GET',
             json: true,
-            resolveWithFullResponse: false
+            qs: args.query,
+            resolveWithFullResponse: false,
+            useQuerystring: true
+
 
         };
         return await request.get(queryString);
@@ -206,5 +173,21 @@ module.exports=[
         return await request.get(queryString);
     }
 },
-
+{
+    method:'GET',
+    path:config.get('MAIN_FILE_URL'),
+    public:true,
+    fn: async (args:any,callback:any)=>
+    {
+        let url:string=`${mainUrl}${config.get('MAIN_FILE_URL')}`;
+        let queryString: any =
+        {
+            uri: url,
+            method: 'GET',
+            json: false,
+            resolveWithFullResponse: true
+        };
+        return await request.get(queryString);
+    }
+},
 ]
