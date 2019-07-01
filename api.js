@@ -63,7 +63,7 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/PrayerManager/SearchLocation/"',
+        path: '/PrayerManager/SearchLocation',
         public: true,
         fn: async (args, callback) => {
             let url = `${mainUrl}/PrayerManager/SearchLocation`;
@@ -71,7 +71,6 @@ module.exports = [
                 qs: args.query,
                 method: 'GET',
                 json: true,
-                useQuerystring: true,
                 resolveWithFullResponse: false
             };
             return await request.get(url, queryString);
