@@ -35,7 +35,7 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/PrayerManager/Prayers"',
+        path: '/PrayerManager/Prayers',
         public: true,
         fn: async (args, callback) => {
             let url = `${mainUrl}/PrayerManager/Prayers`;
@@ -49,7 +49,7 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/PrayerManager/LoadSettings"',
+        path: '/PrayerManager/LoadSettings',
         public: true,
         fn: async (args, callback) => {
             let url = `${mainUrl}/PrayerManager/LoadSettings`;
