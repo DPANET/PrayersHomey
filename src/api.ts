@@ -1,91 +1,87 @@
 import Homey = require('homey');
 import request= require("request-promise-native");
 import config= require('nconf');
+import http=require('http');
 config.file('env.json');
-var mainUrl = `http://localhost:${config.get("PORT")}`
+var mainUrl = `http://localhost:3005/api/app/com.prayerssapp`
 module.exports=[
 {
     method:'GET',
-    path:'/PrayersManager/PrayersSettings',
+    path:'/PrayerManager/PrayersSettings',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string= `${mainUrl}/PrayerManager/PrayersSettings`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:'/PrayersManager/PrayersAdjustments',
+    path:'/PrayerManager/PrayersAdjustments',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/PrayersAdjustments`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:'/PrayersManager/Prayers"',
+    path:'/PrayerManager/Prayers"',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/Prayers`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:'/PrayersManager/LoadSettings"',
+    path:'/PrayerManager/LoadSettings"',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/LoadSettings`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:'/PrayersManager/SearchLocation/"',
+    path:'/PrayerManager/SearchLocation/"',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/SearchLocation`;
         let queryString: any =
         {
-            uri: url,
             qs: args.query,
             method: 'GET',
             json: true,
@@ -93,65 +89,59 @@ module.exports=[
             resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:'/PrayersManager/PrayersLocation',
+    path:'/PrayerManager/PrayersLocation',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/PrayersLocation`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
             json: true,
             resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:'/PrayersManager/PrayersViewMobile',
+    path:'/PrayerManager/PrayersViewMobile',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/PrayersViewMobile`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
+            qs:args.query,
             json: true,
-            qs: args.query,
-            resolveWithFullResponse: false,
-            useQuerystring: true
-
+            resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'POST',
-    path:'/PrayersManager/PrayersViewMobile',
+    path:'/PrayerManager/PrayersViewMobile',
     public:true,
     fn: async (args:any,callback:any)=>
     {
         let url:string=`${mainUrl}/PrayerManager/PrayersViewMobile`;
         let queryString: any =
         {
-            uri: url,
             method: 'POST',
             json: true,
             resolveWithFullResponse: false,
             body:args.body
-
         };
-        return await request.post(queryString);
+        return await request.post(url,queryString);
     }
 },
 
@@ -164,30 +154,33 @@ module.exports=[
         let url:string=`${mainUrl}/Places`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
             json: false,
-            resolveWithFullResponse: true
+            resolveWithFullResponse: false
 
         };
-        return await request.get(queryString);
+        return await request.get(url,queryString);
     }
 },
 {
     method:'GET',
-    path:config.get('MAIN_FILE_URL'),
+    path:'/settings',
     public:true,
     fn: async (args:any,callback:any)=>
     {
-        let url:string=`${mainUrl}${config.get('MAIN_FILE_URL')}`;
+        
+        let url:string=`http://localhost:3005/app/com.prayerssapp/settings`;
         let queryString: any =
         {
-            uri: url,
             method: 'GET',
-            json: false,
-            resolveWithFullResponse: true
+            json:false,
+            resolveWithFullResponse:false
         };
-        return await request.get(queryString);
+        
+        return await request.get(url,queryString);
+         //return  await axios.default(queryString)//pipe(await request.get(queryString))
+    
+    //    return await request.get(queryString).pipe(request.get(queryString));
     }
 },
 ]
