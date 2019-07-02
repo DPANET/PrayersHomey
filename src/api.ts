@@ -1,7 +1,6 @@
 import Homey = require('homey');
 import request= require("request-promise-native");
 import config= require('nconf');
-import http=require('http');
 config.file('env.json');
 var mainUrl = `http://localhost:3005/api/app/com.prayerssapp`
 module.exports=[
