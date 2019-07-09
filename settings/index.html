@@ -6,7 +6,7 @@
   function onHomeyReady( Homey ){
     // ...
    // buidObject();
-    Homey.openURL(`${location.origin}/app/com.prayerssapp/settings/settings.html`);
+   window.location.replace(`${location.origin}/app/com.prayerssapp/settings/settings.html`);
     Homey.ready();
   }
   </script>
