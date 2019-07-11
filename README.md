@@ -12,7 +12,8 @@ The following are the app supported features:
 You need first to configure the app through the settings page, the configurations will allow the app to show prayer times based on your location and adjust the prayer times based on different parameters and inputs.
 
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/JrWY3fx/Settings-1.jpg" alt="Settings-1" border="0"></a>
-<a href="https://ibb.co/jfQf9fQ"><img src="https://i.ibb.co/jfQf9fQ/Screenshot-20190711-065400-Homey.jpg" alt="Screenshot-20190711-065400-Homey" border="0"></a> <a href="https://ibb.co/hKbPwC6"><img src="https://i.ibb.co/hKbPwC6/Screenshot-20190711-065940-Homey.jpg" alt="Screenshot-20190711-065940-Homey" border="0"></a>
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/n7ZkSxt/Screenshot-20190711-065400-Homey.jpg" alt="Screenshot-20190711-065400-Homey" border="0"></a>
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/jZ4Bw5G/Screenshot-20190711-065940-Homey.jpg" alt="Screenshot-20190711-065940-Homey" border="0"></a>
 
 ## Flows
 The Flow will trigger the actions based on the prayer times, below examples of what actions you can do.
